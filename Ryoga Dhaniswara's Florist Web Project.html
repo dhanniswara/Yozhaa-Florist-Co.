@@ -1,0 +1,1734 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Your Florist — Luxury Floral Boutique, Indonesia</title>
+  <meta name="description" content="Your Florist — Bespoke luxury floral arrangements for every occasion. Based in Indonesia." />
+  <meta name="keywords" content="luxury florist, floral boutique, Indonesia florist, wedding flowers, bespoke arrangements" />
+  <meta property="og:title" content="Your Florist — Luxury Floral Boutique" />
+  <meta property="og:description" content="Bespoke luxury floral arrangements crafted with intention." />
+  <meta property="og:type" content="website" />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,200;0,300;0,400;0,500;0,600;1,200;1,300&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap" rel="stylesheet" />
+
+  <!-- GSAP -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
+  <style>
+    /* ─────────────────────────────────────────────────
+       RESET & VARIABLES
+    ───────────────────────────────────────────────── */
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg:         #F9F9F9;
+      --text:       #222025;
+      --text-light: #6B6870;
+      --accent:     #C8A96E;
+      --accent-red: #8B1A1A;
+      --gold:       #B8962E;
+      --white:      #FFFFFF;
+      --border:     rgba(34,32,37,0.12);
+      --font-body:  'Montserrat', sans-serif;
+      --font-serif: 'Cormorant Garamond', serif;
+    }
+
+    html { scroll-behavior: smooth; font-size: 16px; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-body);
+      font-weight: 300;
+      letter-spacing: 0.02em;
+      overflow-x: hidden;
+      cursor: none;
+    }
+
+    img { display: block; width: 100%; height: 100%; object-fit: cover; }
+    a { text-decoration: none; color: inherit; }
+    button { cursor: none; border: none; background: none; font-family: var(--font-body); }
+
+    /* ─────────────────────────────────────────────────
+       CUSTOM CURSOR
+    ───────────────────────────────────────────────── */
+    #cursor {
+      position: fixed;
+      width: 10px; height: 10px;
+      background: var(--text);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9999;
+      transition: transform 0.15s ease, background 0.3s ease;
+      transform: translate(-50%, -50%);
+    }
+    #cursor-ring {
+      position: fixed;
+      width: 36px; height: 36px;
+      border: 1px solid rgba(34,32,37,0.4);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9998;
+      transition: transform 0.4s cubic-bezier(0.23,1,0.32,1), width 0.3s, height 0.3s, opacity 0.3s;
+      transform: translate(-50%, -50%);
+    }
+    body.cursor-hover #cursor { transform: translate(-50%, -50%) scale(2.5); background: var(--accent); }
+    body.cursor-hover #cursor-ring { width: 60px; height: 60px; opacity: 0.5; }
+
+    /* ─────────────────────────────────────────────────
+       LOADING SCREEN
+    ───────────────────────────────────────────────── */
+    #loader {
+      position: fixed;
+      inset: 0;
+      background: var(--text);
+      z-index: 9000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 32px;
+    }
+    #loader .loader-logo {
+      font-family: var(--font-serif);
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      color: var(--white);
+      font-weight: 300;
+      letter-spacing: 0.25em;
+      opacity: 0;
+    }
+    #loader .loader-line {
+      width: 0;
+      height: 1px;
+      background: var(--accent);
+      transition: none;
+    }
+    #loader .loader-pct {
+      font-family: var(--font-body);
+      font-size: 0.65rem;
+      color: rgba(255,255,255,0.4);
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+    }
+
+    /* ─────────────────────────────────────────────────
+       NAVBAR
+    ───────────────────────────────────────────────── */
+    #navbar {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 1000;
+      padding: 28px 48px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: padding 0.5s ease, background 0.5s ease, box-shadow 0.5s ease;
+    }
+    #navbar.scrolled {
+      padding: 18px 48px;
+      background: rgba(249,249,249,0.95);
+      backdrop-filter: blur(12px);
+      box-shadow: 0 1px 0 var(--border);
+    }
+    .nav-logo {
+      font-family: var(--font-serif);
+      font-size: 1.35rem;
+      font-weight: 400;
+      letter-spacing: 0.2em;
+      color: var(--white);
+      transition: color 0.5s ease;
+      text-transform: uppercase;
+    }
+    #navbar.scrolled .nav-logo { color: var(--text); }
+
+    .nav-links {
+      display: flex;
+      gap: 42px;
+      list-style: none;
+    }
+    .nav-links a {
+      font-size: 0.65rem;
+      font-weight: 500;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.85);
+      position: relative;
+      transition: color 0.4s ease;
+    }
+    #navbar.scrolled .nav-links a { color: var(--text-light); }
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -4px; left: 0;
+      width: 0; height: 1px;
+      background: var(--accent);
+      transition: width 0.4s ease;
+    }
+    .nav-links a:hover::after { width: 100%; }
+    .nav-links a:hover { color: var(--accent) !important; }
+
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: none;
+      padding: 4px;
+    }
+    .hamburger span {
+      display: block;
+      width: 24px; height: 1px;
+      background: var(--white);
+      transition: all 0.4s ease;
+    }
+    #navbar.scrolled .hamburger span { background: var(--text); }
+    .hamburger.open span:nth-child(1) { transform: rotate(45deg) translate(4px, 4px); }
+    .hamburger.open span:nth-child(2) { opacity: 0; }
+    .hamburger.open span:nth-child(3) { transform: rotate(-45deg) translate(4px, -4px); }
+
+    /* Mobile nav overlay */
+    #mobile-menu {
+      position: fixed;
+      inset: 0;
+      background: var(--text);
+      z-index: 999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.5s ease;
+    }
+    #mobile-menu.open { opacity: 1; pointer-events: all; }
+    #mobile-menu ul {
+      list-style: none;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      gap: 40px;
+    }
+    #mobile-menu ul li a {
+      font-family: var(--font-serif);
+      font-size: clamp(2.5rem, 8vw, 4rem);
+      color: var(--white);
+      font-weight: 300;
+      letter-spacing: 0.1em;
+      transition: color 0.3s ease;
+    }
+    #mobile-menu ul li a:hover { color: var(--accent); }
+
+    /* ─────────────────────────────────────────────────
+       HERO SECTION
+    ───────────────────────────────────────────────── */
+    #hero {
+      position: relative;
+      width: 100%;
+      height: 100vh;
+      overflow: hidden;
+    }
+    #hero-img {
+      position: absolute;
+      inset: 0;
+      transform: scale(1.2);
+    }
+    #hero-img img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      filter: brightness(0.7);
+    }
+    #hero-overlay {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 2;
+      text-align: center;
+      padding: 0 24px;
+    }
+    .hero-eyebrow {
+      font-size: 0.6rem;
+      font-weight: 500;
+      letter-spacing: 0.4em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 24px;
+      opacity: 0;
+    }
+    .hero-title {
+      font-family: var(--font-serif);
+      font-size: clamp(3.5rem, 10vw, 8rem);
+      color: var(--white);
+      font-weight: 300;
+      line-height: 0.95;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      opacity: 0;
+    }
+    .hero-title em {
+      font-style: italic;
+      font-weight: 300;
+    }
+    .hero-subtitle {
+      font-size: 0.65rem;
+      font-weight: 400;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.6);
+      margin-top: 32px;
+      opacity: 0;
+    }
+    .hero-scroll {
+      position: absolute;
+      bottom: 40px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      opacity: 0;
+    }
+    .hero-scroll span {
+      font-size: 0.55rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.5);
+    }
+    .scroll-line {
+      width: 1px; height: 48px;
+      background: linear-gradient(to bottom, rgba(255,255,255,0.5), transparent);
+      animation: scrollPulse 2s ease-in-out infinite;
+    }
+    @keyframes scrollPulse {
+      0%, 100% { transform: scaleY(1); opacity: 1; }
+      50% { transform: scaleY(0.5); opacity: 0.3; }
+    }
+
+    /* ─────────────────────────────────────────────────
+       SECTION COMMONS
+    ───────────────────────────────────────────────── */
+    section { position: relative; }
+
+    .section-label {
+      font-size: 0.6rem;
+      font-weight: 500;
+      letter-spacing: 0.4em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 16px;
+    }
+    .section-title {
+      font-family: var(--font-serif);
+      font-size: clamp(2.2rem, 5vw, 4.5rem);
+      font-weight: 300;
+      line-height: 1.1;
+      letter-spacing: 0.04em;
+    }
+    .section-title em { font-style: italic; }
+
+    .btn {
+      display: inline-block;
+      font-size: 0.6rem;
+      font-weight: 500;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      padding: 14px 32px;
+      border: 1px solid currentColor;
+      transition: background 0.4s ease, color 0.4s ease;
+      cursor: none;
+    }
+    .btn-dark {
+      color: var(--text);
+      border-color: var(--text);
+    }
+    .btn-dark:hover { background: var(--text); color: var(--white); }
+    .btn-light {
+      color: var(--white);
+      border-color: rgba(255,255,255,0.7);
+    }
+    .btn-light:hover { background: var(--white); color: var(--text); }
+    .btn-accent {
+      color: var(--accent);
+      border-color: var(--accent);
+    }
+    .btn-accent:hover { background: var(--accent); color: var(--white); }
+
+    /* ─────────────────────────────────────────────────
+       INTRO STRIP
+    ───────────────────────────────────────────────── */
+    #intro {
+      padding: 100px 48px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: center;
+      border-bottom: 1px solid var(--border);
+    }
+    .intro-text .section-title { margin-bottom: 32px; }
+    .intro-text p {
+      font-size: 0.9rem;
+      line-height: 1.9;
+      color: var(--text-light);
+      max-width: 420px;
+      margin-bottom: 40px;
+    }
+    .intro-image {
+      position: relative;
+      height: 500px;
+      overflow: hidden;
+    }
+    .intro-image img { object-fit: cover; height: 100%; }
+    .intro-image::after {
+      content: '';
+      position: absolute;
+      bottom: -1px; left: 0; right: 0;
+      height: 60%;
+      background: linear-gradient(to top, var(--bg), transparent);
+      pointer-events: none;
+    }
+    .intro-image .img-label {
+      position: absolute;
+      bottom: 24px; right: 24px;
+      font-size: 0.55rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--text-light);
+      writing-mode: vertical-rl;
+    }
+
+    /* ─────────────────────────────────────────────────
+       MARQUEE
+    ───────────────────────────────────────────────── */
+    .marquee-wrap {
+      overflow: hidden;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 20px 0;
+      background: var(--bg);
+    }
+    .marquee-track {
+      display: flex;
+      gap: 0;
+      animation: marquee 20s linear infinite;
+      white-space: nowrap;
+    }
+    .marquee-item {
+      display: flex;
+      align-items: center;
+      gap: 32px;
+      padding: 0 32px;
+      font-family: var(--font-serif);
+      font-size: 1.1rem;
+      font-style: italic;
+      font-weight: 300;
+      letter-spacing: 0.06em;
+      color: var(--text-light);
+    }
+    .marquee-item .dot {
+      width: 4px; height: 4px;
+      border-radius: 50%;
+      background: var(--accent);
+      flex-shrink: 0;
+    }
+    @keyframes marquee {
+      from { transform: translateX(0); }
+      to { transform: translateX(-50%); }
+    }
+
+    /* ─────────────────────────────────────────────────
+       HERO PANELS (3 large hero sections)
+    ───────────────────────────────────────────────── */
+    .hero-panel {
+      position: relative;
+      height: 90vh;
+      overflow: hidden;
+    }
+    .hero-panel .panel-img {
+      position: absolute;
+      inset: -15%;
+      transition: none;
+    }
+    .hero-panel .panel-img img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      filter: brightness(0.6);
+    }
+    .hero-panel .panel-content {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 80px;
+      z-index: 2;
+    }
+    .hero-panel .panel-content .section-label { color: rgba(200,169,110,0.9); }
+    .hero-panel .panel-content .section-title {
+      color: var(--white);
+      max-width: 560px;
+      margin-bottom: 12px;
+    }
+    .hero-panel .panel-content p {
+      font-size: 0.85rem;
+      color: rgba(255,255,255,0.65);
+      max-width: 420px;
+      line-height: 1.8;
+      margin-bottom: 36px;
+      letter-spacing: 0.02em;
+    }
+    /* Alternate layout */
+    .hero-panel.right .panel-content {
+      align-items: flex-end;
+      text-align: right;
+    }
+
+    /* ─────────────────────────────────────────────────
+       CATALOG SECTION
+    ───────────────────────────────────────────────── */
+    #collection {
+      padding: 120px 48px;
+    }
+    .catalog-header {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      margin-bottom: 72px;
+    }
+    .catalog-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2px;
+    }
+    .catalog-item {
+      position: relative;
+      overflow: hidden;
+      cursor: none;
+      background: #eee;
+    }
+    .catalog-item .item-img {
+      position: relative;
+      aspect-ratio: 3/4;
+      overflow: hidden;
+    }
+    .catalog-item .item-img img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      transition: transform 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+    .catalog-item:hover .item-img img { transform: scale(1.06); }
+    .catalog-item .item-info {
+      padding: 20px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+    }
+    .catalog-item .item-name {
+      font-size: 0.72rem;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+    .catalog-item .item-price {
+      font-family: var(--font-serif);
+      font-size: 1rem;
+      font-style: italic;
+      color: var(--text-light);
+    }
+    .catalog-item .item-overlay {
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      bottom: 52px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(34,32,37,0.3);
+      opacity: 0;
+      transition: opacity 0.4s ease;
+      z-index: 2;
+    }
+    .catalog-item:hover .item-overlay { opacity: 1; }
+
+    /* ─────────────────────────────────────────────────
+       VALENTINE SECTION
+    ───────────────────────────────────────────────── */
+    #valentine {
+      position: relative;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      min-height: 80vh;
+    }
+    .valentine-visual {
+      position: relative;
+      overflow: hidden;
+    }
+    .valentine-visual img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      filter: brightness(0.75) saturate(1.2);
+      transition: transform 0.8s ease;
+    }
+    #valentine:hover .valentine-visual img { transform: scale(1.04); }
+    .valentine-content {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 80px 72px;
+      background: #FFF5F5;
+    }
+    .valentine-content .section-label { color: #C9707A; }
+    .valentine-content .section-title { margin-bottom: 24px; color: #4A1020; }
+    .valentine-content p {
+      font-size: 0.88rem;
+      line-height: 1.9;
+      color: #7A4050;
+      max-width: 380px;
+      margin-bottom: 40px;
+    }
+    .btn-romance {
+      color: #8B1A1A;
+      border-color: #8B1A1A;
+    }
+    .btn-romance:hover { background: #8B1A1A; color: var(--white); }
+
+    /* ─────────────────────────────────────────────────
+       LUNAR NEW YEAR SECTION
+    ───────────────────────────────────────────────── */
+    #lunar {
+      position: relative;
+      overflow: hidden;
+      min-height: 80vh;
+      background: #1A0A0A;
+      display: flex;
+      align-items: stretch;
+    }
+    .lunar-bg {
+      position: absolute;
+      inset: 0;
+    }
+    .lunar-bg img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      opacity: 0.35;
+      filter: saturate(1.5);
+    }
+    /* Gold pattern overlay */
+    .lunar-bg::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse at 80% 50%, rgba(184,150,46,0.15), transparent 60%),
+        radial-gradient(ellipse at 20% 50%, rgba(139,26,26,0.3), transparent 60%);
+    }
+    .lunar-content {
+      position: relative;
+      z-index: 2;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      width: 100%;
+      padding: 0;
+    }
+    .lunar-left {
+      padding: 100px 72px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .lunar-left .section-label { color: var(--gold); }
+    .lunar-left .section-title {
+      color: #F5E6C8;
+      margin-bottom: 24px;
+    }
+    .lunar-left p {
+      font-size: 0.88rem;
+      line-height: 1.9;
+      color: rgba(245,230,200,0.65);
+      max-width: 360px;
+      margin-bottom: 40px;
+    }
+    .btn-gold {
+      color: var(--gold);
+      border-color: var(--gold);
+    }
+    .btn-gold:hover { background: var(--gold); color: var(--text); }
+    .lunar-right {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 80px 40px;
+    }
+    .lunar-emblem {
+      width: 280px; height: 280px;
+      border: 1px solid rgba(184,150,46,0.3);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 12px;
+      position: relative;
+    }
+    .lunar-emblem::before {
+      content: '';
+      position: absolute;
+      inset: 12px;
+      border: 1px solid rgba(184,150,46,0.15);
+      border-radius: 50%;
+    }
+    .lunar-emblem .emblem-char {
+      font-family: serif;
+      font-size: 4.5rem;
+      color: var(--gold);
+      line-height: 1;
+      text-shadow: 0 0 40px rgba(184,150,46,0.4);
+    }
+    .lunar-emblem .emblem-text {
+      font-size: 0.55rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: rgba(245,230,200,0.5);
+    }
+
+    /* ─────────────────────────────────────────────────
+       ABOUT / PHILOSOPHY
+    ───────────────────────────────────────────────── */
+    #about {
+      padding: 140px 48px;
+      max-width: 900px;
+      margin: 0 auto;
+      text-align: center;
+    }
+    #about .section-label { margin-bottom: 24px; }
+    #about .section-title { font-size: clamp(2rem, 4vw, 3.5rem); margin-bottom: 40px; }
+    #about p {
+      font-size: 1rem;
+      line-height: 2;
+      color: var(--text-light);
+      margin-bottom: 24px;
+    }
+    #about .signature {
+      font-family: var(--font-serif);
+      font-size: 1.5rem;
+      font-style: italic;
+      color: var(--accent);
+      margin-top: 48px;
+    }
+
+    /* ─────────────────────────────────────────────────
+       STATS STRIP
+    ───────────────────────────────────────────────── */
+    .stats-strip {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+    .stat-item {
+      padding: 60px 40px;
+      text-align: center;
+      border-right: 1px solid var(--border);
+    }
+    .stat-item:last-child { border-right: none; }
+    .stat-num {
+      font-family: var(--font-serif);
+      font-size: 3.5rem;
+      font-weight: 300;
+      color: var(--text);
+      line-height: 1;
+      margin-bottom: 12px;
+    }
+    .stat-label {
+      font-size: 0.6rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--text-light);
+    }
+
+    /* ─────────────────────────────────────────────────
+       CONTACT SECTION
+    ───────────────────────────────────────────────── */
+    #contact {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      min-height: 80vh;
+    }
+    .contact-visual {
+      position: relative;
+      overflow: hidden;
+    }
+    .contact-visual img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      filter: brightness(0.65);
+    }
+    .contact-visual .cv-text {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 60px;
+      text-align: center;
+    }
+    .contact-visual .cv-text .section-title { color: var(--white); margin-bottom: 16px; }
+    .contact-visual .cv-text p {
+      font-size: 0.82rem;
+      color: rgba(255,255,255,0.6);
+      letter-spacing: 0.08em;
+    }
+    .contact-form-wrap {
+      background: var(--bg);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 80px 72px;
+    }
+    .contact-form-wrap .section-label { margin-bottom: 12px; }
+    .contact-form-wrap h3 {
+      font-family: var(--font-serif);
+      font-size: 2rem;
+      font-weight: 300;
+      margin-bottom: 48px;
+    }
+    .form-group {
+      margin-bottom: 28px;
+    }
+    .form-group label {
+      display: block;
+      font-size: 0.58rem;
+      font-weight: 500;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--text-light);
+      margin-bottom: 10px;
+    }
+    .form-group input,
+    .form-group textarea {
+      width: 100%;
+      background: transparent;
+      border: none;
+      border-bottom: 1px solid var(--border);
+      padding: 12px 0;
+      font-family: var(--font-body);
+      font-size: 0.9rem;
+      font-weight: 300;
+      color: var(--text);
+      outline: none;
+      transition: border-color 0.3s ease;
+      cursor: none;
+      resize: none;
+    }
+    .form-group input:focus,
+    .form-group textarea:focus { border-color: var(--accent); }
+    .form-group input.error,
+    .form-group textarea.error { border-color: #C04040; }
+    .form-error {
+      font-size: 0.6rem;
+      color: #C04040;
+      letter-spacing: 0.1em;
+      margin-top: 6px;
+      display: none;
+    }
+    .form-error.visible { display: block; }
+    .form-success {
+      font-size: 0.75rem;
+      color: #4A7C59;
+      letter-spacing: 0.1em;
+      padding: 16px 0;
+      display: none;
+    }
+    .form-success.visible { display: block; }
+
+    /* ─────────────────────────────────────────────────
+       FOOTER
+    ───────────────────────────────────────────────── */
+    footer {
+      background: var(--text);
+      color: var(--white);
+      padding: 80px 48px 48px;
+    }
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 60px;
+      margin-bottom: 60px;
+    }
+    .footer-brand .logo {
+      font-family: var(--font-serif);
+      font-size: 1.5rem;
+      letter-spacing: 0.2em;
+      margin-bottom: 20px;
+      color: var(--white);
+    }
+    .footer-brand p {
+      font-size: 0.78rem;
+      line-height: 1.9;
+      color: rgba(255,255,255,0.45);
+      max-width: 280px;
+    }
+    .footer-col h4 {
+      font-size: 0.58rem;
+      font-weight: 500;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 24px;
+    }
+    .footer-col ul { list-style: none; }
+    .footer-col ul li {
+      margin-bottom: 12px;
+      font-size: 0.78rem;
+      color: rgba(255,255,255,0.5);
+      transition: color 0.3s ease;
+      cursor: none;
+    }
+    .footer-col ul li:hover { color: var(--white); }
+    .footer-bottom {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-top: 1px solid rgba(255,255,255,0.1);
+      padding-top: 32px;
+    }
+    .footer-bottom p {
+      font-size: 0.62rem;
+      letter-spacing: 0.15em;
+      color: rgba(255,255,255,0.25);
+    }
+    .social-links {
+      display: flex;
+      gap: 20px;
+    }
+    .social-links a {
+      width: 36px; height: 36px;
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: rgba(255,255,255,0.5);
+      font-size: 0.75rem;
+      transition: all 0.3s ease;
+    }
+    .social-links a:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+      background: rgba(200,169,110,0.1);
+    }
+
+    /* ─────────────────────────────────────────────────
+       SCROLL REVEAL
+    ───────────────────────────────────────────────── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(40px);
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+      transition: opacity 0.9s ease, transform 0.9s ease;
+    }
+
+    /* ─────────────────────────────────────────────────
+       RESPONSIVE
+    ───────────────────────────────────────────────── */
+    @media (max-width: 1024px) {
+      #intro { grid-template-columns: 1fr; gap: 48px; }
+      .intro-image { height: 400px; }
+      #valentine { grid-template-columns: 1fr; }
+      .lunar-content { grid-template-columns: 1fr; }
+      .lunar-right { display: none; }
+      #contact { grid-template-columns: 1fr; }
+      .contact-visual { min-height: 360px; }
+      .footer-grid { grid-template-columns: 1fr 1fr; gap: 40px; }
+      .stats-strip { grid-template-columns: 1fr 1fr; }
+      .stat-item:nth-child(2) { border-right: none; }
+    }
+
+    @media (max-width: 768px) {
+      #navbar { padding: 22px 24px; }
+      #navbar.scrolled { padding: 16px 24px; }
+      .nav-links { display: none; }
+      .hamburger { display: flex; }
+
+      #intro { padding: 80px 24px; }
+      #collection { padding: 80px 16px; }
+      .catalog-header { flex-direction: column; align-items: flex-start; gap: 24px; }
+      .catalog-grid { gap: 1px; }
+
+      .hero-panel .panel-content { padding: 48px 24px; }
+      .valentine-content { padding: 60px 32px; }
+      .lunar-left { padding: 80px 32px; }
+      .contact-form-wrap { padding: 60px 32px; }
+
+      footer { padding: 60px 24px 40px; }
+      .footer-grid { grid-template-columns: 1fr; gap: 36px; }
+      .footer-bottom { flex-direction: column; gap: 20px; text-align: center; }
+
+      .stats-strip { grid-template-columns: 1fr 1fr; }
+      #about { padding: 100px 24px; }
+    }
+
+    @media (max-width: 480px) {
+      .catalog-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- CUSTOM CURSOR -->
+<div id="cursor"></div>
+<div id="cursor-ring"></div>
+
+<!-- LOADING SCREEN -->
+<div id="loader">
+  <div class="loader-logo">Your Florist</div>
+  <div class="loader-line" id="loader-line"></div>
+  <div class="loader-pct" id="loader-pct">0%</div>
+</div>
+
+<!-- MOBILE MENU -->
+<div id="mobile-menu">
+  <ul>
+    <li><a href="#hero" onclick="closeMobileMenu()">Home</a></li>
+    <li><a href="#collection" onclick="closeMobileMenu()">Collection</a></li>
+    <li><a href="#about" onclick="closeMobileMenu()">About</a></li>
+    <li><a href="#contact" onclick="closeMobileMenu()">Contact</a></li>
+  </ul>
+</div>
+
+<!-- NAVBAR -->
+<nav id="navbar">
+  <a href="#hero" class="nav-logo">Your Florist</a>
+  <ul class="nav-links">
+    <li><a href="#hero">Home</a></li>
+    <li><a href="#collection">Collection</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <button class="hamburger" id="hamburger" aria-label="Menu" onclick="toggleMobileMenu()">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- ═══════════════════════════════════════
+     HERO
+════════════════════════════════════════ -->
+<section id="hero">
+  <div id="hero-img">
+    <img
+      src="https://images.unsplash.com/photo-1487530811176-3780de880c2d?w=1800&q=80"
+      alt="Luxury floral arrangement"
+      loading="eager"
+    />
+  </div>
+  <div id="hero-overlay">
+    <p class="hero-eyebrow">Est. Indonesia · Bespoke Floral Artistry</p>
+    <h1 class="hero-title">Your<br /><em>Florist</em></h1>
+    <p class="hero-subtitle">Where Nature Meets Haute Couture</p>
+  </div>
+  <div class="hero-scroll">
+    <div class="scroll-line"></div>
+    <span>Scroll</span>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════
+     INTRO
+════════════════════════════════════════ -->
+<section id="intro">
+  <div class="intro-text reveal">
+    <p class="section-label">Our Philosophy</p>
+    <h2 class="section-title">Flowers crafted<br />as <em>fine art</em></h2>
+    <p>We believe every arrangement is a conversation between nature and emotion. Each bloom is handpicked, each composition considered — creating moments of extraordinary beauty that linger long after the last petal falls.</p>
+    <a href="#collection" class="btn btn-dark">Explore Collections</a>
+  </div>
+  <div class="intro-image reveal">
+    <img
+      src="https://images.unsplash.com/photo-1508610048659-a06b669e3321?w=900&q=80"
+      alt="Floral artistry detail"
+      loading="lazy"
+    />
+    <span class="img-label">Handcrafted · Indonesia</span>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee-wrap">
+  <div class="marquee-track">
+    <div class="marquee-item"><span>Bespoke Arrangements</span><span class="dot"></span></div>
+    <div class="marquee-item"><span>Wedding Floristry</span><span class="dot"></span></div>
+    <div class="marquee-item"><span>Event Styling</span><span class="dot"></span></div>
+    <div class="marquee-item"><span>Seasonal Collections</span><span class="dot"></span></div>
+    <div class="marquee-item"><span>Same-Day Delivery</span><span class="dot"></span></div>
+    <div class="marquee-item"><span>Bespoke Arrangements</span><span class="dot"></span></div>
+    <div class="marquee-item"><span>Wedding Floristry</span><span class="dot"></span></div>
+    <div class="marquee-item"><span>Event Styling</span><span class="dot"></span></div>
+    <div class="marquee-item"><span>Seasonal Collections</span><span class="dot"></span></div>
+    <div class="marquee-item"><span>Same-Day Delivery</span><span class="dot"></span></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     HERO PANEL 1
+════════════════════════════════════════ -->
+<section class="hero-panel">
+  <div class="panel-img" data-parallax>
+    <img
+      src="https://images.unsplash.com/photo-1490750967868-88df5691cc4c?w=1800&q=80"
+      alt="Signature Collection"
+      loading="lazy"
+    />
+  </div>
+  <div class="panel-content reveal">
+    <p class="section-label">Chapter One</p>
+    <h2 class="section-title">The Signature<br /><em>Atelier</em></h2>
+    <p>Our flagship collection — where rare botanicals meet architectural precision. Each arrangement is a study in restraint and opulence.</p>
+    <a href="#collection" class="btn btn-light">Discover More</a>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════
+     HERO PANEL 2
+════════════════════════════════════════ -->
+<section class="hero-panel right">
+  <div class="panel-img" data-parallax>
+    <img
+      src="https://images.unsplash.com/photo-1561181286-d3fee7d55364?w=1800&q=80"
+      alt="Garden Collection"
+      loading="lazy"
+    />
+  </div>
+  <div class="panel-content reveal">
+    <p class="section-label">Chapter Two</p>
+    <h2 class="section-title">Garden<br /><em>Romantique</em></h2>
+    <p>Soft hues, trailing vines, and wild botanicals. Romance captured in flora — for the moments that take your breath away.</p>
+    <a href="#collection" class="btn btn-light">Shop Romantic</a>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════
+     HERO PANEL 3
+════════════════════════════════════════ -->
+<section class="hero-panel">
+  <div class="panel-img" data-parallax>
+    <img
+      src="https://images.unsplash.com/photo-1444930694458-01babf71870c?w=1800&q=80"
+      alt="Minimal Collection"
+      loading="lazy"
+    />
+  </div>
+  <div class="panel-content reveal">
+    <p class="section-label">Chapter Three</p>
+    <h2 class="section-title">Minimal<br /><em>Luxe</em></h2>
+    <p>Stripped to essence. Single-stem compositions and monochromatic palettes for the discerning eye that values form above all.</p>
+    <a href="#collection" class="btn btn-light">Explore Minimal</a>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════
+     CATALOG
+════════════════════════════════════════ -->
+<section id="collection">
+  <div class="catalog-header reveal">
+    <div>
+      <p class="section-label">The Collection</p>
+      <h2 class="section-title">Editorial<br /><em>Catalogue</em></h2>
+    </div>
+    <a href="#contact" class="btn btn-dark">Custom Order</a>
+  </div>
+
+  <div class="catalog-grid">
+    <!--
+      TO REPLACE IMAGES: Change the src URL in each <img> tag below.
+      Recommended size: 600×800px minimum (3:4 portrait ratio)
+    -->
+
+    <!-- Row 1 -->
+    <div class="catalog-item reveal">
+      <div class="item-img">
+        <img src="https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?w=600&h=800&fit=crop&q=80" alt="Blanche Bouquet" loading="lazy" />
+        <div class="item-overlay"><span class="btn btn-light" style="font-size:0.58rem">View Detail</span></div>
+      </div>
+      <div class="item-info">
+        <span class="item-name">Blanche Bouquet</span>
+        <span class="item-price">IDR 485,000</span>
+      </div>
+    </div>
+    <div class="catalog-item reveal">
+      <div class="item-img">
+        <img src="https://images.unsplash.com/photo-1578762560042-46ad127c2b33?w=600&h=800&fit=crop&q=80" alt="Rosé Atelier" loading="lazy" />
+        <div class="item-overlay"><span class="btn btn-light" style="font-size:0.58rem">View Detail</span></div>
+      </div>
+      <div class="item-info">
+        <span class="item-name">Rosé Atelier</span>
+        <span class="item-price">IDR 620,000</span>
+      </div>
+    </div>
+
+    <!-- Row 2 -->
+    <div class="catalog-item reveal">
+      <div class="item-img">
+        <img src="https://images.unsplash.com/photo-1463936575829-25148e1db1b8?w=600&h=800&fit=crop&q=80" alt="Jardin Secret" loading="lazy" />
+        <div class="item-overlay"><span class="btn btn-light" style="font-size:0.58rem">View Detail</span></div>
+      </div>
+      <div class="item-info">
+        <span class="item-name">Jardin Secret</span>
+        <span class="item-price">IDR 750,000</span>
+      </div>
+    </div>
+    <div class="catalog-item reveal">
+      <div class="item-img">
+        <img src="https://images.unsplash.com/photo-1549716679-bbde5b7bbd8d?w=600&h=800&fit=crop&q=80" alt="Soleil d'Or" loading="lazy" />
+        <div class="item-overlay"><span class="btn btn-light" style="font-size:0.58rem">View Detail</span></div>
+      </div>
+      <div class="item-info">
+        <span class="item-name">Soleil d'Or</span>
+        <span class="item-price">IDR 890,000</span>
+      </div>
+    </div>
+
+    <!-- Row 3 -->
+    <div class="catalog-item reveal">
+      <div class="item-img">
+        <img src="https://images.unsplash.com/photo-1425082661705-1834bfd09dca?w=600&h=800&fit=crop&q=80" alt="Minuit Noir" loading="lazy" />
+        <div class="item-overlay"><span class="btn btn-light" style="font-size:0.58rem">View Detail</span></div>
+      </div>
+      <div class="item-info">
+        <span class="item-name">Minuit Noir</span>
+        <span class="item-price">IDR 1,100,000</span>
+      </div>
+    </div>
+    <div class="catalog-item reveal">
+      <div class="item-img">
+        <img src="https://images.unsplash.com/photo-1508610048659-a06b669e3321?w=600&h=800&fit=crop&q=80" alt="Aurore Pastel" loading="lazy" />
+        <div class="item-overlay"><span class="btn btn-light" style="font-size:0.58rem">View Detail</span></div>
+      </div>
+      <div class="item-info">
+        <span class="item-name">Aurore Pastel</span>
+        <span class="item-price">IDR 540,000</span>
+      </div>
+    </div>
+
+    <!-- Row 4 -->
+    <div class="catalog-item reveal">
+      <div class="item-img">
+        <img src="https://images.unsplash.com/photo-1487530811176-3780de880c2d?w=600&h=800&fit=crop&q=80" alt="Eden Luxe" loading="lazy" />
+        <div class="item-overlay"><span class="btn btn-light" style="font-size:0.58rem">View Detail</span></div>
+      </div>
+      <div class="item-info">
+        <span class="item-name">Eden Luxe</span>
+        <span class="item-price">IDR 975,000</span>
+      </div>
+    </div>
+    <div class="catalog-item reveal">
+      <div class="item-img">
+        <img src="https://images.unsplash.com/photo-1490750967868-88df5691cc4c?w=600&h=800&fit=crop&q=80" alt="Velours Cramoisi" loading="lazy" />
+        <div class="item-overlay"><span class="btn btn-light" style="font-size:0.58rem">View Detail</span></div>
+      </div>
+      <div class="item-info">
+        <span class="item-name">Velours Cramoisi</span>
+        <span class="item-price">IDR 1,250,000</span>
+      </div>
+    </div>
+
+    <!-- Row 5 -->
+    <div class="catalog-item reveal">
+      <div class="item-img">
+        <img src="https://images.unsplash.com/photo-1561181286-d3fee7d55364?w=600&h=800&fit=crop&q=80" alt="Cerisier" loading="lazy" />
+        <div class="item-overlay"><span class="btn btn-light" style="font-size:0.58rem">View Detail</span></div>
+      </div>
+      <div class="item-info">
+        <span class="item-name">Cerisier</span>
+        <span class="item-price">IDR 680,000</span>
+      </div>
+    </div>
+    <div class="catalog-item reveal">
+      <div class="item-img">
+        <img src="https://images.unsplash.com/photo-1444930694458-01babf71870c?w=600&h=800&fit=crop&q=80" alt="Lilas Sauvage" loading="lazy" />
+        <div class="item-overlay"><span class="btn btn-light" style="font-size:0.58rem">View Detail</span></div>
+      </div>
+      <div class="item-info">
+        <span class="item-name">Lilas Sauvage</span>
+        <span class="item-price">IDR 820,000</span>
+      </div>
+    </div>
+
+    <!-- Row 6 -->
+    <div class="catalog-item reveal">
+      <div class="item-img">
+        <img src="https://images.unsplash.com/photo-1549716679-bbde5b7bbd8d?w=600&h=800&fit=crop&q=80" alt="Pétale d'Ivoire" loading="lazy" />
+        <div class="item-overlay"><span class="btn btn-light" style="font-size:0.58rem">View Detail</span></div>
+      </div>
+      <div class="item-info">
+        <span class="item-name">Pétale d'Ivoire</span>
+        <span class="item-price">IDR 595,000</span>
+      </div>
+    </div>
+    <div class="catalog-item reveal">
+      <div class="item-img">
+        <img src="https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?w=600&h=800&fit=crop&q=80" alt="Grand Fleur" loading="lazy" />
+        <div class="item-overlay"><span class="btn btn-light" style="font-size:0.58rem">View Detail</span></div>
+      </div>
+      <div class="item-info">
+        <span class="item-name">Grand Fleur</span>
+        <span class="item-price">IDR 1,450,000</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════
+     VALENTINE
+════════════════════════════════════════ -->
+<section id="valentine">
+  <div class="valentine-visual">
+    <img
+      src="https://images.unsplash.com/photo-1578762560042-46ad127c2b33?w=900&q=80"
+      alt="Valentine Collection"
+      loading="lazy"
+    />
+  </div>
+  <div class="valentine-content reveal">
+    <p class="section-label">Limited Edition</p>
+    <h2 class="section-title">Valentine's<br /><em>Collection</em></h2>
+    <p>Love is a language spoken in flowers. Our Valentine's collection captures the full spectrum of romance — from tender blush to passionate crimson — in arrangements that say what words cannot.</p>
+    <a href="#contact" class="btn btn-romance">Shop Love</a>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════
+     LUNAR NEW YEAR
+════════════════════════════════════════ -->
+<section id="lunar">
+  <div class="lunar-bg">
+    <img
+      src="https://images.unsplash.com/photo-1463936575829-25148e1db1b8?w=1800&q=80"
+      alt="Lunar New Year Collection"
+      loading="lazy"
+    />
+  </div>
+  <div class="lunar-content">
+    <div class="lunar-left reveal">
+      <p class="section-label">Lunar New Year</p>
+      <h2 class="section-title" style="color:#F5E6C8">Prosperity<br /><em>in Bloom</em></h2>
+      <p>Ancient symbols of fortune and abundance, reinterpreted through the language of flowers. Our Lunar New Year collection weaves gold, crimson, and rare botanicals into living talismans of prosperity.</p>
+      <a href="#contact" class="btn btn-gold">Celebrate Prosperity</a>
+    </div>
+    <div class="lunar-right">
+      <div class="lunar-emblem">
+        <span class="emblem-char">花</span>
+        <span class="emblem-text">Hana · Flower</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════
+     ABOUT
+════════════════════════════════════════ -->
+<section id="about">
+  <p class="section-label reveal">Our Story</p>
+  <h2 class="section-title reveal">More than flowers —<br /><em>an emotion, composed</em></h2>
+  <p class="reveal">Founded in the lush archipelago of Indonesia, Your Florist began as an obsession: to bring the precision of haute couture to the ephemeral art of floristry. We source blooms from the finest growers across Java, Bali, and beyond — selecting only those that meet our exacting standard of beauty.</p>
+  <p class="reveal">Each arrangement is conceived as a composition. We consider proportion, texture, fragrance, and the slow theatre of blooming. Our studio is a place where nature is curated, never forced.</p>
+  <div class="signature reveal">— Your Florist, Indonesia</div>
+</section>
+
+<!-- STATS -->
+<div class="stats-strip">
+  <div class="stat-item reveal">
+    <div class="stat-num">8+</div>
+    <div class="stat-label">Years of Craft</div>
+  </div>
+  <div class="stat-item reveal">
+    <div class="stat-num">2,400</div>
+    <div class="stat-label">Arrangements Created</div>
+  </div>
+  <div class="stat-item reveal">
+    <div class="stat-num">12</div>
+    <div class="stat-label">Signature Collections</div>
+  </div>
+  <div class="stat-item reveal">
+    <div class="stat-num">100%</div>
+    <div class="stat-label">Handcrafted</div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     CONTACT
+════════════════════════════════════════ -->
+<section id="contact">
+  <div class="contact-visual">
+    <img
+      src="https://images.unsplash.com/photo-1508610048659-a06b669e3321?w=900&q=80"
+      alt="Contact Your Florist"
+      loading="lazy"
+    />
+    <div class="cv-text">
+      <p class="section-label" style="color:rgba(200,169,110,0.8)">Get In Touch</p>
+      <h2 class="section-title" style="font-size:clamp(1.8rem,4vw,3rem)">Let's create<br /><em>something beautiful</em></h2>
+      <p style="margin-top:24px">contact@yourflorist.com<br />+62 XXX XXXX XXXX<br />Indonesia</p>
+    </div>
+  </div>
+  <div class="contact-form-wrap">
+    <p class="section-label">Message Us</p>
+    <h3>Begin Your<br /><em style="font-family:var(--font-serif);font-style:italic">Enquiry</em></h3>
+
+    <form id="contact-form" novalidate>
+      <div class="form-group">
+        <label for="name">Your Name</label>
+        <input type="text" id="name" name="name" placeholder="e.g. Siti Rahayu" autocomplete="name" />
+        <div class="form-error" id="name-error">Please enter your name.</div>
+      </div>
+      <div class="form-group">
+        <label for="email">Email Address</label>
+        <input type="email" id="email" name="email" placeholder="e.g. siti@email.com" autocomplete="email" />
+        <div class="form-error" id="email-error">Please enter a valid email address.</div>
+      </div>
+      <div class="form-group">
+        <label for="message">Your Message</label>
+        <textarea id="message" name="message" rows="4" placeholder="Tell us about your occasion…"></textarea>
+        <div class="form-error" id="message-error">Please write your message.</div>
+      </div>
+      <div class="form-success" id="form-success">✦ Thank you. We will be in touch within 24 hours.</div>
+      <button type="submit" class="btn btn-dark" style="width:100%;text-align:center;justify-content:center;display:block;padding:16px">
+        Send Message
+      </button>
+    </form>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════
+     FOOTER
+════════════════════════════════════════ -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <div class="logo">Your Florist</div>
+      <p>Bespoke luxury floral arrangements crafted with intention. Based in Indonesia, delivering beauty across the archipelago.</p>
+      <div class="social-links" style="margin-top:32px">
+        <!-- Instagram icon -->
+        <a href="#" aria-label="Instagram">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
+          </svg>
+        </a>
+        <!-- WhatsApp icon -->
+        <a href="#" aria-label="WhatsApp">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/>
+          </svg>
+        </a>
+      </div>
+    </div>
+
+    <div class="footer-col">
+      <h4>Collections</h4>
+      <ul>
+        <li>Signature Atelier</li>
+        <li>Garden Romantique</li>
+        <li>Minimal Luxe</li>
+        <li>Valentine's</li>
+        <li>Lunar New Year</li>
+      </ul>
+    </div>
+
+    <div class="footer-col">
+      <h4>Services</h4>
+      <ul>
+        <li>Bespoke Arrangements</li>
+        <li>Wedding Floristry</li>
+        <li>Corporate Events</li>
+        <li>Subscription Blooms</li>
+        <li>Same-Day Delivery</li>
+      </ul>
+    </div>
+
+    <div class="footer-col">
+      <h4>Contact</h4>
+      <ul>
+        <li>contact@yourflorist.com</li>
+        <li>+62 XXX XXXX XXXX</li>
+        <li>Indonesia</li>
+        <li style="margin-top:16px;color:rgba(255,255,255,0.25);font-size:0.68rem">Mon–Sat · 09.00–18.00</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="footer-bottom">
+    <p>© 2025 Your Florist · All rights reserved · Indonesia</p>
+    <p>Designed with intention · Crafted with love</p>
+  </div>
+</footer>
+
+<!-- ════════════════════════════════════════
+     JAVASCRIPT
+════════════════════════════════════════ -->
+<script>
+  /* ── GSAP Registration ── */
+  gsap.registerPlugin(ScrollTrigger);
+
+  /* ────────────────────────────────────
+     CUSTOM CURSOR
+  ──────────────────────────────────── */
+  const cursor = document.getElementById('cursor');
+  const ring   = document.getElementById('cursor-ring');
+  let mx = 0, my = 0, rx = 0, ry = 0;
+
+  document.addEventListener('mousemove', e => {
+    mx = e.clientX; my = e.clientY;
+    cursor.style.left = mx + 'px';
+    cursor.style.top  = my + 'px';
+  });
+
+  // Smooth ring follow
+  function animateRing() {
+    rx += (mx - rx) * 0.12;
+    ry += (my - ry) * 0.12;
+    ring.style.left = rx + 'px';
+    ring.style.top  = ry + 'px';
+    requestAnimationFrame(animateRing);
+  }
+  animateRing();
+
+  document.querySelectorAll('a, button, .catalog-item, .btn').forEach(el => {
+    el.addEventListener('mouseenter', () => document.body.classList.add('cursor-hover'));
+    el.addEventListener('mouseleave', () => document.body.classList.remove('cursor-hover'));
+  });
+
+  /* ────────────────────────────────────
+     LOADING SCREEN
+  ──────────────────────────────────── */
+  const loader     = document.getElementById('loader');
+  const loaderLogo = document.querySelector('.loader-logo');
+  const loaderLine = document.getElementById('loader-line');
+  const loaderPct  = document.getElementById('loader-pct');
+
+  const tl = gsap.timeline({
+    onComplete: () => {
+      // Hide loader, run hero animation
+      gsap.to(loader, {
+        opacity: 0,
+        duration: 0.8,
+        ease: 'power2.out',
+        onComplete: () => {
+          loader.style.display = 'none';
+          runHeroAnimation();
+        }
+      });
+    }
+  });
+
+  tl.to(loaderLogo, { opacity: 1, duration: 0.6, ease: 'power2.out' })
+    .to(loaderLine, { width: '200px', duration: 1.4, ease: 'power2.inOut' }, '-=0.3')
+    .call(() => {
+      let count = 0;
+      const interval = setInterval(() => {
+        count += 2;
+        loaderPct.textContent = Math.min(count, 100) + '%';
+        if (count >= 100) clearInterval(interval);
+      }, 20);
+    }, [], '-=1.4')
+    .to({}, { duration: 0.3 }); // tiny pause before fade
+
+  /* ────────────────────────────────────
+     HERO ANIMATION
+  ──────────────────────────────────── */
+  function runHeroAnimation() {
+    const heroTl = gsap.timeline();
+    heroTl
+      .to('#hero-img', {
+        scale: 1,
+        duration: 2,
+        ease: 'power3.out'
+      })
+      .to('.hero-eyebrow', {
+        opacity: 1,
+        y: 0,
+        duration: 0.8,
+        ease: 'power2.out'
+      }, '-=1.2')
+      .to('.hero-title', {
+        opacity: 1,
+        y: 0,
+        duration: 1,
+        ease: 'power2.out'
+      }, '-=0.6')
+      .to('.hero-subtitle', {
+        opacity: 1,
+        duration: 0.8,
+        ease: 'power2.out'
+      }, '-=0.4')
+      .to('.hero-scroll', {
+        opacity: 1,
+        duration: 0.6,
+        ease: 'power2.out'
+      }, '-=0.2');
+  }
+
+  /* ────────────────────────────────────
+     NAVBAR SCROLL STATE
+  ──────────────────────────────────── */
+  const navbar = document.getElementById('navbar');
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > 80) {
+      navbar.classList.add('scrolled');
+    } else {
+      navbar.classList.remove('scrolled');
+    }
+  });
+
+  /* ────────────────────────────────────
+     MOBILE MENU
+  ──────────────────────────────────── */
+  const mobileMenu = document.getElementById('mobile-menu');
+  const hamburger  = document.getElementById('hamburger');
+  let menuOpen = false;
+
+  function toggleMobileMenu() {
+    menuOpen = !menuOpen;
+    hamburger.classList.toggle('open', menuOpen);
+    mobileMenu.classList.toggle('open', menuOpen);
+    document.body.style.overflow = menuOpen ? 'hidden' : '';
+  }
+
+  function closeMobileMenu() {
+    menuOpen = false;
+    hamburger.classList.remove('open');
+    mobileMenu.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  /* ────────────────────────────────────
+     PARALLAX ON HERO PANELS
+  ──────────────────────────────────── */
+  document.querySelectorAll('[data-parallax]').forEach(panel => {
+    gsap.to(panel, {
+      yPercent: 20,
+      ease: 'none',
+      scrollTrigger: {
+        trigger: panel.closest('.hero-panel'),
+        start: 'top bottom',
+        end: 'bottom top',
+        scrub: true
+      }
+    });
+  });
+
+  /* ────────────────────────────────────
+     SCROLL REVEAL
+  ──────────────────────────────────── */
+  const revealEls = document.querySelectorAll('.reveal');
+  const observer  = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        // Stagger siblings
+        setTimeout(() => {
+          entry.target.classList.add('visible');
+        }, 0);
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+
+  // Stagger siblings in the same parent
+  const staggerGroups = {};
+  revealEls.forEach(el => {
+    const key = el.parentElement;
+    if (!staggerGroups[key]) staggerGroups[key] = [];
+    staggerGroups[key].push(el);
+  });
+
+  revealEls.forEach(el => observer.observe(el));
+
+  // Add stagger to catalog items
+  const catalogItems = document.querySelectorAll('.catalog-item');
+  const catalogObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const items = Array.from(entry.target.parentElement.querySelectorAll('.catalog-item'));
+        const idx   = items.indexOf(entry.target);
+        setTimeout(() => {
+          entry.target.classList.add('visible');
+        }, (idx % 2) * 120);
+        catalogObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.08 });
+
+  catalogItems.forEach(el => {
+    el.classList.add('reveal');
+    catalogObserver.observe(el);
+  });
+
+  /* ────────────────────────────────────
+     FORM VALIDATION
+  ──────────────────────────────────── */
+  const form = document.getElementById('contact-form');
+
+  function showError(id, show) {
+    const el  = document.getElementById(id + '-error');
+    const inp = document.getElementById(id);
+    if (show) {
+      el.classList.add('visible');
+      inp.classList.add('error');
+    } else {
+      el.classList.remove('visible');
+      inp.classList.remove('error');
+    }
+  }
+
+  form.addEventListener('submit', function(e) {
+    e.preventDefault();
+    let valid = true;
+
+    const name    = document.getElementById('name').value.trim();
+    const email   = document.getElementById('email').value.trim();
+    const message = document.getElementById('message').value.trim();
+    const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    showError('name',    !name);
+    showError('email',   !email || !emailRe.test(email));
+    showError('message', !message);
+
+    if (!name || !email || !emailRe.test(email) || !message) return;
+
+    // Success
+    const btn = form.querySelector('button[type="submit"]');
+    btn.textContent = 'Sending…';
+    btn.disabled = true;
+
+    setTimeout(() => {
+      document.getElementById('form-success').classList.add('visible');
+      form.reset();
+      btn.textContent = 'Send Message';
+      btn.disabled = false;
+    }, 1200);
+  });
+
+  // Live validation
+  ['name', 'email', 'message'].forEach(id => {
+    const el = document.getElementById(id);
+    el.addEventListener('input', () => {
+      if (id === 'email') {
+        const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        showError('email', el.value && !emailRe.test(el.value));
+      } else {
+        if (el.value.trim()) showError(id, false);
+      }
+    });
+  });
+</script>
+
+</body>
+</html>
